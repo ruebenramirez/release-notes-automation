@@ -33,12 +33,5 @@ jobs:
           echo "head: $CURRENT_COMMIT";
           echo "Release Notes: $RELEASE_NOTES";
 
-          echo "::set-output name=release-notes::$RELEASE_NOTES";
-          echo "::set-output name=current-tag::$CURRENT_TAG";
-
-      - name: Slack Notification
-        uses: rtCamp/action-slack-notify@v2
-        env:
-          SLACK_MESSAGE: ${{ join(steps.build_release_notes.outputs.release-notes, '\n') }}
-          SLACK_TITLE: Release Notes ${{ steps.build_release_notes.outputs.current-tag }}
-          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          # send notification to channel via webhook
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"$RELEASE_NOTES"}' ${{ secrets.SLACK_WEBHOOK }}
