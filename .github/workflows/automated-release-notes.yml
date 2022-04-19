@@ -25,7 +25,7 @@ jobs:
           fi;
           CURRENT_COMMIT=$(git log | head -n 1 | cut -d ' ' -f 2);
 
-          RELEASE_NOTES="Release Notes: \n $(git --no-pager log --pretty=oneline $LAST_TAG_COMMIT..$CURRENT_COMMIT)";
+          RELEASE_NOTES="Release Notes: $CURRENT_TAG \n $(git --no-pager log --pretty=oneline $LAST_TAG_COMMIT..$CURRENT_COMMIT)";
 
           echo "current tag: $CURRENT_TAG";
           echo "last tag: $LAST_TAG";
