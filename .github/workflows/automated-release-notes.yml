@@ -33,4 +33,4 @@ jobs:
           echo "head: $CURRENT_COMMIT";
           echo "Release Notes: $RELEASE_NOTES";
 
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"$RELEASE_NOTES"}' ${{ secrets.SLACK_WEBHOOK }};
+          curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$RELEASE_NOTES\"}" ${{ secrets.SLACK_WEBHOOK }};
