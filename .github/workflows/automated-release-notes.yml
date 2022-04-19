@@ -1,0 +1,35 @@
+name: automated-release-notes
+on:
+  create
+jobs:
+  retrieve-commit-messages-as-release-notes:
+    if: contains(github.ref, 'tags') # only run on creation of tag
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: checkout entire repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: output commit one-liners since last tag as the
+        run: >
+          CURRENT_TAG=$(echo $GITHUB_REF | cut -d '/' -f 3);
+          LAST_TAG=$(git tag -l | grep -v $CURRENT_TAG | tail -n 1);
+          LAST_TAG_COMMIT=$(git show-ref $LAST_TAG | cut -d ' ' -f 1);
+          CURRENT_COMMIT=$(git log | head -n 1 | cut -d ' ' -f 2);
+
+          # echo "current tag: $CURRENT_TAG";
+          # echo "last tag: $LAST_TAG";
+          # echo "last tag commit: $LAST_TAG_COMMIT";
+          # echo "head: $CURRENT_COMMIT";
+
+          if [[ -z $LAST_TAG_COMMIT ]]; then
+            echo "No tag found in repo.":
+            exit 1;
+          fi;
+
+          git --no-pager log --pretty=oneline $LAST_TAG_COMMIT..$CURRENT_COMMIT
+
+          # TODO: now that we have the release notes, what do we want to do with them?
