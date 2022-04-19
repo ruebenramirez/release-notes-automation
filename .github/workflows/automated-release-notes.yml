@@ -25,12 +25,12 @@ jobs:
           fi;
           CURRENT_COMMIT=$(git log | head -n 1 | cut -d ' ' -f 2);
 
-          RELEASE_NOTES=$(git --no-pager log --pretty=oneline $LAST_TAG_COMMIT..$CURRENT_COMMIT);
+          RELEASE_NOTES="Release Notes: \n $(git --no-pager log --pretty=oneline $LAST_TAG_COMMIT..$CURRENT_COMMIT)";
 
           echo "current tag: $CURRENT_TAG";
           echo "last tag: $LAST_TAG";
           echo "last tag commit: $LAST_TAG_COMMIT";
           echo "head: $CURRENT_COMMIT";
-          echo "Release Notes: $RELEASE_NOTES";
+          echo "$RELEASE_NOTES";
 
           curl -X POST -H 'Content-type: application/json' --data "{\"text\":\"$RELEASE_NOTES\"}" ${{ secrets.SLACK_WEBHOOK }};
