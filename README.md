@@ -29,20 +29,11 @@ Overview of the steps:
 - a webhook URL is generated that we can now use to create a github repo `SLACK_WEBHOOK` secret with.
 
 
-
-
 ### Prepare GitHub
-
-Private GHES (GitHub Enterprise deployments) require mirroring community GitHub Actions and referencing them internally.  It is possible that required community GitHub Actions have not been mirrored into the `github.tools.sap` ghcom-actions org yet.  This will need to be completed in order for the Release Notes Automation workflow to work.
-
-#### Dependencies
-
-This Release Notes Automation depends upon the `rtCamp/action-slack-notify` community GitHub Action which is publicly available here:
-https://github.com/rtCamp/action-slack-notify
 
 #### Create a repo secret for GitHub Actions
 
-This workflow requires a GitHub Actions repo secret named `SLACK_Webhook`.
+This workflow requires a GitHub Actions repo secret named `SLACK_WEBHOOK`.
 
 More information about what GitHub Action secrets are and how to use them is available here: https://docs.github.com/en/actions/security-guides/encrypted-secrets.
 
