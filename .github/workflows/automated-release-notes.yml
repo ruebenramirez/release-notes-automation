@@ -13,23 +13,32 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: output commit one-liners since last tag as the
+      - name: release notes from commits since last tag
+        id: build_release_notes
         run: >
           CURRENT_TAG=$(echo $GITHUB_REF | cut -d '/' -f 3);
           LAST_TAG=$(git tag -l | grep -v $CURRENT_TAG | tail -n 1);
           LAST_TAG_COMMIT=$(git show-ref $LAST_TAG | cut -d ' ' -f 1);
+          if [[ -z $LAST_TAG_COMMIT ]]; then
+            echo "Detected first release tag: using entire commit history to generate our first Release Notes.":
+            LAST_TAG_COMMIT=$(git --no-pager log -1 --pretty=oneline | cut -d ' ' -f 1)
+          fi;
           CURRENT_COMMIT=$(git log | head -n 1 | cut -d ' ' -f 2);
+
+          RELEASE_NOTES=$(git --no-pager log --pretty=oneline $LAST_TAG_COMMIT..$CURRENT_COMMIT);
 
           echo "current tag: $CURRENT_TAG";
           echo "last tag: $LAST_TAG";
           echo "last tag commit: $LAST_TAG_COMMIT";
           echo "head: $CURRENT_COMMIT";
+          echo "Release Notes: $RELEASE_NOTES";
 
-          if [[ -z $LAST_TAG_COMMIT ]]; then
-            echo "No tag found in repo.":
-            exit 1;
-          fi;
+          echo "::set-output name=release-notes::$RELEASE_NOTES\n";
+          echo "::set-output name=current-tag::$CURRENT_TAG\n";
 
-          git --no-pager log --pretty=oneline $LAST_TAG_COMMIT..$CURRENT_COMMIT
-
-          # TODO: now that we have the release notes, what do we want to do with them?
+      - name: Slack Notification
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_MESSAGE: ${{join(steps.build_release_notes.outputs.*, '\n')}}
+          SLACK_TITLE: ${{'Release Notes ', join(steps.build_release_notes.outputs.*, '\n')}}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
