@@ -20,10 +20,10 @@ jobs:
           LAST_TAG_COMMIT=$(git show-ref $LAST_TAG | cut -d ' ' -f 1);
           CURRENT_COMMIT=$(git log | head -n 1 | cut -d ' ' -f 2);
 
-          # echo "current tag: $CURRENT_TAG";
-          # echo "last tag: $LAST_TAG";
-          # echo "last tag commit: $LAST_TAG_COMMIT";
-          # echo "head: $CURRENT_COMMIT";
+          echo "current tag: $CURRENT_TAG";
+          echo "last tag: $LAST_TAG";
+          echo "last tag commit: $LAST_TAG_COMMIT";
+          echo "head: $CURRENT_COMMIT";
 
           if [[ -z $LAST_TAG_COMMIT ]]; then
             echo "No tag found in repo.":
