@@ -20,12 +20,12 @@ jobs:
           LAST_TAG=$(git tag -l | grep -v $CURRENT_TAG | tail -n 1);
           LAST_TAG_COMMIT=$(git show-ref $LAST_TAG | cut -d ' ' -f 1);
           if [[ -z $LAST_TAG_COMMIT ]]; then
-            echo "Detected first release tag: using entire commit history to generate our first Release Notes.":
+            echo "Detected first release tag: using entire commit history to generate our first Release Notes.";
             LAST_TAG_COMMIT=$(git --no-pager log -1 --pretty=oneline | cut -d ' ' -f 1)
           fi;
           CURRENT_COMMIT=$(git log | head -n 1 | cut -d ' ' -f 2);
 
-          RELEASE_NOTES="Release Notes: $CURRENT_TAG \n $(git --no-pager log --pretty=oneline $LAST_TAG_COMMIT..$CURRENT_COMMIT)";
+          RELEASE_NOTES="Release Notes: $CURRENT_TAG \n $(git log --graph --pretty=format:'%h -%d %s (%cr) <%an>' --abbrev-commit $LAST_TAG_COMMIT..$CURRENT_COMMIT)";
 
           echo "current tag: $CURRENT_TAG";
           echo "last tag: $LAST_TAG";
